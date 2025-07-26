@@ -1,0 +1,170 @@
+{% extends 'base.html' %}
+
+{% block title %}Billing Dashboard - Supermarket Management{% endblock %}
+{% block page_title %}Billing Dashboard{% endblock %}
+
+{% block content %}
+<!-- Stats Cards -->
+<div class="row mb-4">
+    <div class="col-md-3">
+        <div class="card stats-card text-center">
+            <div class="card-body">
+                <i class="fas fa-dollar-sign fa-2x mb-3"></i>
+                <h4>${{ stats.today_sales }}</h4>
+                <p class="mb-0">Today's Sales</p>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-3">
+        <div class="card stats-card text-center">
+            <div class="card-body">
+                <i class="fas fa-chart-line fa-2x mb-3"></i>
+                <h4>${{ stats.monthly_sales }}</h4>
+                <p class="mb-0">Monthly Sales</p>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-3">
+        <div class="card stats-card text-center">
+            <div class="card-body">
+                <i class="fas fa-file-invoice fa-2x mb-3"></i>
+                <h4>{{ stats.pending_invoices }}</h4>
+                <p class="mb-0">Pending Invoices</p>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-3">
+        <div class="card stats-card text-center">
+            <div class="card-body">
+                <i class="fas fa-exclamation-triangle fa-2x mb-3"></i>
+                <h4>{{ stats.overdue_invoices }}</h4>
+                <p class="mb-0">Overdue Invoices</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Quick Actions -->
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <h5><i class="fas fa-bolt me-2"></i>Quick Actions</h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-3 mb-2">
+                        <a href="{% url 'create_invoice' %}" class="btn btn-primary w-100">
+                            <i class="fas fa-plus me-2"></i>New Invoice
+                        </a>
+                    </div>
+                    <div class="col-md-3 mb-2">
+                        <a href="{% url 'create_customer' %}" class="btn btn-success w-100">
+                            <i class="fas fa-user-plus me-2"></i>New Customer
+                        </a>
+                    </div>
+                    <div class="col-md-3 mb-2">
+                        <a href="{% url 'invoice_list' %}" class="btn btn-info w-100">
+                            <i class="fas fa-list me-2"></i>All Invoices
+                        </a>
+                    </div>
+                    <div class="col-md-3 mb-2">
+                        <a href="{% url 'accounts_receivable' %}" class="btn btn-warning w-100">
+                            <i class="fas fa-money-check me-2"></i>Receivables
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Recent Invoices -->
+<div class="row">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h5><i class="fas fa-file-invoice me-2"></i>Recent Invoices</h5>
+                <a href="{% url 'invoice_list' %}" class="btn btn-sm btn-outline-primary">View All</a>
+            </div>
+            <div class="card-body">
+                {% if recent_invoices %}
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Invoice #</th>
+                                    <th>Customer</th>
+                                    <th>Amount</th>
+                                    <th>Status</th>
+                                    <th>Date</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for invoice in recent_invoices %}
+                                <tr>
+                                    <td>{{ invoice.invoice_number }}</td>
+                                    <td>{{ invoice.customer.name|default:"Walk-in Customer" }}</td>
+                                    <td>${{ invoice.total_amount }}</td>
+                                    <td>
+                                        <span class="badge bg-{% if invoice.payment_status == 'paid' %}success{% elif invoice.payment_status == 'pending' %}warning{% elif invoice.payment_status == 'overdue' %}danger{% else %}secondary{% endif %}">
+                                            {{ invoice.get_payment_status_display }}
+                                        </span>
+                                    </td>
+                                    <td>{{ invoice.created_at|date:"M d, Y" }}</td>
+                                    <td>
+                                        <a href="{% url 'invoice_detail' invoice.id %}" class="btn btn-sm btn-outline-primary">
+                                            <i class="fas fa-eye"></i>
+                                        </a>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                {% else %}
+                    <div class="text-center py-4">
+                        <i class="fas fa-file-invoice fa-3x text-muted mb-3"></i>
+                        <p class="text-muted">No invoices found</p>
+                        <a href="{% url 'create_invoice' %}" class="btn btn-primary">Create First Invoice</a>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-header">
+                <h5><i class="fas fa-money-check me-2"></i>Accounts Receivable</h5>
+            </div>
+            <div class="card-body">
+                {% if accounts_receivable %}
+                    {% for receivable in accounts_receivable %}
+                    <div class="d-flex justify-content-between align-items-center mb-3 p-2 border rounded">
+                        <div>
+                            <strong>{{ receivable.customer.name }}</strong>
+                            <br>
+                            <small class="text-muted">Due: {{ receivable.due_date|date:"M d, Y" }}</small>
+                        </div>
+                        <div class="text-end">
+                            <strong class="text-danger">${{ receivable.amount_due }}</strong>
+                        </div>
+                    </div>
+                    {% endfor %}
+                    <a href="{% url 'accounts_receivable' %}" class="btn btn-sm btn-outline-primary w-100">View All</a>
+                {% else %}
+                    <div class="text-center py-4">
+                        <i class="fas fa-check-circle fa-2x text-success mb-2"></i>
+                        <p class="text-muted">All accounts settled!</p>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

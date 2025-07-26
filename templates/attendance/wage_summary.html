@@ -1,0 +1,117 @@
+{% extends 'base.html' %}
+
+{% block title %}Wage Summary - Supermarket Management{% endblock %}
+{% block page_title %}Wage Summary{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <h5><i class="fas fa-money-bill-wave me-2"></i>Monthly Wage Summary</h5>
+            </div>
+            <div class="card-body">
+                {% if wage_summaries %}
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Month/Year</th>
+                                    <th>Total Hours</th>
+                                    <th>Total Wages</th>
+                                    <th>Payment Status</th>
+                                    <th>Paid Date</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for summary in wage_summaries %}
+                                <tr>
+                                    <td>
+                                        <strong>{{ summary.month|date:"F" }} {{ summary.year }}</strong>
+                                    </td>
+                                    <td>
+                                        <i class="fas fa-clock text-primary me-1"></i>
+                                        {{ summary.total_hours|floatformat:2 }} hrs
+                                    </td>
+                                    <td>
+                                        <span class="fw-bold text-success">${{ summary.total_wage|floatformat:2 }}</span>
+                                    </td>
+                                    <td>
+                                        {% if summary.is_paid %}
+                                            <span class="badge bg-success">
+                                                <i class="fas fa-check me-1"></i>Paid
+                                            </span>
+                                        {% else %}
+                                            <span class="badge bg-warning">
+                                                <i class="fas fa-clock me-1"></i>Pending
+                                            </span>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        {% if summary.paid_date %}
+                                            {{ summary.paid_date|date:"M d, Y" }}
+                                        {% else %}
+                                            <span class="text-muted">-</span>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                    <!-- Summary Cards -->
+                    <div class="row mt-4">
+                        {% with total_hours=wage_summaries|length total_wages=0 %}
+                        <div class="col-md-4">
+                            <div class="card bg-info text-white">
+                                <div class="card-body text-center">
+                                    <i class="fas fa-calendar fa-2x mb-2"></i>
+                                    <h4>{{ wage_summaries|length }}</h4>
+                                    <p class="mb-0">Months Tracked</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="card bg-primary text-white">
+                                <div class="card-body text-center">
+                                    <i class="fas fa-clock fa-2x mb-2"></i>
+                                    <h4>
+                                        {% for summary in wage_summaries %}
+                                            {% if forloop.first %}{{ summary.total_hours|floatformat:2 }}{% endif %}
+                                        {% endfor %}
+                                    </h4>
+                                    <p class="mb-0">Hours This Month</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="card bg-success text-white">
+                                <div class="card-body text-center">
+                                    <i class="fas fa-dollar-sign fa-2x mb-2"></i>
+                                    <h4>
+                                        {% for summary in wage_summaries %}
+                                            {% if forloop.first %}&dollar;{{ summary.total_wage|floatformat:2 }}{% endif %}
+                                        {% endfor %}
+                                    </h4>
+                                    <p class="mb-0">Wages This Month</p>
+                                </div>
+                            </div>
+                        </div>
+                        {% endwith %}
+                    </div>
+                {% else %}
+                    <div class="text-center py-5">
+                        <i class="fas fa-money-bill-wave fa-4x text-muted mb-3"></i>
+                        <h4 class="text-muted">No Wage Data Available</h4>
+                        <p class="text-muted">Start tracking your attendance to see wage summaries here.</p>
+                        <a href="{% url 'dashboard' %}" class="btn btn-primary">
+                            <i class="fas fa-tachometer-alt me-2"></i>Go to Dashboard
+                        </a>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

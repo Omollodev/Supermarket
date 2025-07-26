@@ -1,0 +1,138 @@
+{% extends 'base.html' %}
+
+{% block title %}Invoice List - Supermarket Management{% endblock %}
+{% block page_title %}All Invoices{% endblock %}
+
+{% block content %}
+<!-- Filter Section -->
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <h6><i class="fas fa-filter me-2"></i>Filter Invoices</h6>
+            </div>
+            <div class="card-body">
+                <form method="get" class="row g-3">
+                    <div class="col-md-3">
+                        <label for="status" class="form-label">Payment Status</label>
+                        <select class="form-select" id="status" name="status">
+                            <option value="">All Statuses</option>
+                            <option value="pending" {% if status == 'pending' %}selected{% endif %}>Pending</option>
+                            <option value="paid" {% if status == 'paid' %}selected{% endif %}>Paid</option>
+                            <option value="partial" {% if status == 'partial' %}selected{% endif %}>Partially Paid</option>
+                            <option value="overdue" {% if status == 'overdue' %}selected{% endif %}>Overdue</option>
+                            <option value="cancelled" {% if status == 'cancelled' %}selected{% endif %}>Cancelled</option>
+                        </select>
+                    </div>
+                    <div class="col-md-3">
+                        <label for="start_date" class="form-label">Start Date</label>
+                        <input type="date" class="form-control" id="start_date" name="start_date" value="{{ start_date }}">
+                    </div>
+                    <div class="col-md-3">
+                        <label for="end_date" class="form-label">End Date</label>
+                        <input type="date" class="form-control" id="end_date" name="end_date" value="{{ end_date }}">
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label">&nbsp;</label>
+                        <div class="d-grid">
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-search me-2"></i>Filter
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Invoices List -->
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h5><i class="fas fa-file-invoice me-2"></i>Invoices</h5>
+                <a href="{% url 'create_invoice' %}" class="btn btn-primary">
+                    <i class="fas fa-plus me-2"></i>New Invoice
+                </a>
+            </div>
+            <div class="card-body">
+                {% if invoices %}
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Invoice #</th>
+                                    <th>Customer</th>
+                                    <th>Date</th>
+                                    <th>Due Date</th>
+                                    <th>Amount</th>
+                                    <th>Paid</th>
+                                    <th>Status</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for invoice in invoices %}
+                                <tr>
+                                    <td>
+                                        <strong>{{ invoice.invoice_number }}</strong>
+                                    </td>
+                                    <td>
+                                        {% if invoice.customer %}
+                                            <i class="fas fa-user me-1"></i>{{ invoice.customer.name }}
+                                        {% else %}
+                                            <i class="fas fa-walking me-1"></i><em>Walk-in Customer</em>
+                                        {% endif %}
+                                    </td>
+                                    <td>{{ invoice.created_at|date:"M d, Y" }}</td>
+                                    <td>
+                                        {{ invoice.due_date|date:"M d, Y" }}
+                                        {% if invoice.payment_status == 'overdue' %}
+                                            <i class="fas fa-exclamation-triangle text-danger ms-1" title="Overdue"></i>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        <strong>${{ invoice.total_amount|floatformat:2 }}</strong>
+                                    </td>
+                                    <td>
+                                        <span class="text-success">${{ invoice.paid_amount|floatformat:2 }}</span>
+                                    </td>
+                                    <td>
+                                        <span class="badge bg-{% if invoice.payment_status == 'paid' %}success{% elif invoice.payment_status == 'pending' %}warning{% elif invoice.payment_status == 'overdue' %}danger{% elif invoice.payment_status == 'partial' %}info{% else %}secondary{% endif %}">
+                                            {{ invoice.get_payment_status_display }}
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <div class="btn-group btn-group-sm">
+                                            <a href="{% url 'invoice_detail' invoice.id %}" class="btn btn-outline-primary" title="View Details">
+                                                <i class="fas fa-eye"></i>
+                                            </a>
+                                            <a href="{% url 'edit_invoice' invoice.id %}" class="btn btn-outline-secondary" title="Edit">
+                                                <i class="fas fa-edit"></i>
+                                            </a>
+                                            <a href="{% url 'generate_receipt' invoice.id %}" class="btn btn-outline-success" title="Download Receipt">
+                                                <i class="fas fa-download"></i>
+                                            </a>
+                                        </div>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                {% else %}
+                    <div class="text-center py-5">
+                        <i class="fas fa-file-invoice fa-4x text-muted mb-3"></i>
+                        <h4 class="text-muted">No Invoices Found</h4>
+                        <p class="text-muted">Create your first invoice to get started.</p>
+                        <a href="{% url 'create_invoice' %}" class="btn btn-primary">
+                            <i class="fas fa-plus me-2"></i>Create Invoice
+                        </a>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

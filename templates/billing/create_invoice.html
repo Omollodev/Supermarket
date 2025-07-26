@@ -1,0 +1,86 @@
+{% extends 'base.html' %}
+
+{% block title %}Create Invoice - Supermarket Management{% endblock %}
+{% block page_title %}Create New Invoice{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <h5><i class="fas fa-plus me-2"></i>Create New Invoice</h5>
+            </div>
+            <div class="card-body">
+                <form method="post">
+                    {% csrf_token %}
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="{{ form.customer.id_for_label }}" class="form-label">
+                                <i class="fas fa-user me-2"></i>Customer
+                            </label>
+                            {{ form.customer }}
+                            <small class="form-text text-muted">Leave blank for walk-in customer</small>
+                        </div>
+                        
+                        <div class="col-md-6 mb-3">
+                            <label for="{{ form.due_date.id_for_label }}" class="form-label">
+                                <i class="fas fa-calendar me-2"></i>Due Date
+                            </label>
+                            {{ form.due_date }}
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="{{ form.tax_rate.id_for_label }}" class="form-label">
+                                <i class="fas fa-percentage me-2"></i>Tax Rate (%)
+                            </label>
+                            {{ form.tax_rate }}
+                        </div>
+                        
+                        <div class="col-md-6 mb-3">
+                            <label for="{{ form.discount_amount.id_for_label }}" class="form-label">
+                                <i class="fas fa-tag me-2"></i>Discount Amount ($)
+                            </label>
+                            {{ form.discount_amount }}
+                        </div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="{{ form.notes.id_for_label }}" class="form-label">
+                            <i class="fas fa-sticky-note me-2"></i>Notes
+                        </label>
+                        {{ form.notes }}
+                    </div>
+                    
+                    <div class="d-flex justify-content-between">
+                        <a href="{% url 'billing_dashboard' %}" class="btn btn-secondary">
+                            <i class="fas fa-arrow-left me-2"></i>Cancel
+                        </a>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-save me-2"></i>Create Invoice
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mt-4">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <h6><i class="fas fa-info-circle me-2"></i>Quick Tips</h6>
+            </div>
+            <div class="card-body">
+                <ul class="list-unstyled mb-0">
+                    <li><i class="fas fa-check text-success me-2"></i>After creating the invoice, you can add items and process payments</li>
+                    <li><i class="fas fa-check text-success me-2"></i>Tax will be calculated automatically based on the subtotal</li>
+                    <li><i class="fas fa-check text-success me-2"></i>You can create a new customer from the billing dashboard if needed</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

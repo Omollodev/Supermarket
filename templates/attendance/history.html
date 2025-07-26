@@ -1,0 +1,145 @@
+{% extends 'base.html' %}
+
+{% block title %}Attendance History - Supermarket Management{% endblock %}
+{% block page_title %}Attendance History{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <h5><i class="fas fa-filter me-2"></i>Filter Records</h5>
+            </div>
+            <div class="card-body">
+                <form method="get" class="row g-3">
+                    <div class="col-md-4">
+                        <label for="start_date" class="form-label">Start Date</label>
+                        <input type="date" class="form-control" id="start_date" name="start_date" value="{{ start_date }}">
+                    </div>
+                    <div class="col-md-4">
+                        <label for="end_date" class="form-label">End Date</label>
+                        <input type="date" class="form-control" id="end_date" name="end_date" value="{{ end_date }}">
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label">&nbsp;</label>
+                        <div class="d-grid">
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-search me-2"></i>Filter
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h5><i class="fas fa-history me-2"></i>Attendance Records</h5>
+                {% if totals %}
+                <div class="text-end">
+                    <small class="text-muted">
+                        Total Hours: <strong>{{ totals.total_hours|default:0 }}</strong> | 
+                        Total Wages: <strong>${{ totals.total_wage|default:0 }}</strong>
+                    </small>
+                </div>
+                {% endif %}
+            </div>
+            <div class="card-body">
+                {% if attendance_records %}
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Date</th>
+                                    <th>Clock In</th>
+                                    <th>Clock Out</th>
+                                    <th>Total Hours</th>
+                                    <th>Wage Earned</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for attendance in attendance_records %}
+                                <tr>
+                                    <td>
+                                        <strong>{{ attendance.date|date:"M d, Y" }}</strong>
+                                        <br>
+                                        <small class="text-muted">{{ attendance.date|date:"l" }}</small>
+                                    </td>
+                                    <td>
+                                        <i class="fas fa-sign-in-alt text-success me-1"></i>
+                                        {{ attendance.clock_in|time:"H:i" }}
+                                    </td>
+                                    <td>
+                                        {% if attendance.clock_out %}
+                                            <i class="fas fa-sign-out-alt text-danger me-1"></i>
+                                            {{ attendance.clock_out|time:"H:i" }}
+                                        {% else %}
+                                            <span class="badge bg-success">
+                                                <i class="fas fa-clock me-1"></i>Active
+                                            </span>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        <strong>{{ attendance.total_hours|floatformat:2 }}</strong>
+                                        {% if attendance.total_hours >= 8 %}
+                                            <i class="fas fa-check-circle text-success ms-1" title="Full day"></i>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        <span class="text-success fw-bold">${{ attendance.wage_earned|floatformat:2 }}</span>
+                                    </td>
+                                    <td>
+                                        {% if attendance.clock_out %}
+                                            <span class="badge bg-primary">Completed</span>
+                                        {% else %}
+                                            <span class="badge bg-warning">In Progress</span>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                    {% if totals %}
+                    <div class="row mt-4">
+                        <div class="col-md-6">
+                            <div class="card bg-primary text-white">
+                                <div class="card-body text-center">
+                                    <i class="fas fa-clock fa-2x mb-2"></i>
+                                    <h4>{{ totals.total_hours|default:0|floatformat:2 }}</h4>
+                                    <p class="mb-0">Total Hours</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="card bg-success text-white">
+                                <div class="card-body text-center">
+                                    <i class="fas fa-dollar-sign fa-2x mb-2"></i>
+                                    <h4>${{ totals.total_wage|default:0|floatformat:2 }}</h4>
+                                    <p class="mb-0">Total Wages</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endif %}
+                {% else %}
+                    <div class="text-center py-5">
+                        <i class="fas fa-calendar-times fa-4x text-muted mb-3"></i>
+                        <h4 class="text-muted">No Attendance Records Found</h4>
+                        <p class="text-muted">Try adjusting your date filters or check back later.</p>
+                        <a href="{% url 'dashboard' %}" class="btn btn-primary">
+                            <i class="fas fa-tachometer-alt me-2"></i>Go to Dashboard
+                        </a>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
