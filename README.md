@@ -61,25 +61,25 @@ A comprehensive Django-based supermarket management system with role-based authe
 ### Quick Setup
 
 1. **Clone the repository**
-\`\`\`bash
+```bash
 git clone https://github.com/Omollodev/Supermarket.git
 cd supermarket-management
-\`\`\`
+```
 
 2. **Run the setup script**
-\`\`\`bash
+```bash
 chmod +x scripts/setup.sh
 ./scripts/setup.sh
-\`\`\`
+```
 
 3. **Update configuration**
    - Edit `.env` file with your database and email settings
    - Configure MySQL database connection
 
 4. **Start the development server**
-\`\`\`bash
+```bash
 python manage.py runserver
-\`\`\`
+```
 
 5. **Access the application**
    - Main application: http://127.0.0.1:8000
@@ -88,42 +88,37 @@ python manage.py runserver
 ### Manual Installation
 
 1. **Create virtual environment**
-\`\`\`bash
+```bash
 python3 -m venv venv
 source venv/bin/activate  
 # On Windows: 
 venv\Scripts\activate
-\`\`\`
+```
 
 2. **Install dependencies**
-\`\`\`bash
+```bash
 pip3 install -r requirements.txt
-\`\`\`
+```
 
 3. **Configure database**
    - Create MySQL database: `supermarket_db`
    - Update `.env` file with database credentials
 
 4. **Run migrations**
-\`\`\`bash
+```bash
 python3 manage.py makemigrations \
 python3 manage.py migrate
-\`\`\`
+```
 
 5. **Create superuser**
-\`\`\`bash
+```bash
 python3 manage.py createsuperuser
-\`\`\`
-
-6. **Load sample data**
-\`\`\`bash
-python3 scripts/create_sample_data.py
-\`\`\`
+```
 
 ## Configuration
 
 ### Environment Variables (.env)
-\`\`\`env
+```env
 SECRET_KEY=your-secret-key-here
 DEBUG=True
 DB_NAME=supermarket_db
@@ -135,15 +130,15 @@ EMAIL_HOST_USER=your-email@gmail.com
 EMAIL_HOST_PASSWORD=your-app-password
 STRIPE_PUBLISHABLE_KEY=pk_test_your_stripe_key
 STRIPE_SECRET_KEY=sk_test_your_stripe_key
-\`\`\`
+```
 
 ### Database Setup
-\`\`\`sql
+```sql
 CREATE DATABASE supermarket_db CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 CREATE USER 'supermarket_user'@'localhost' IDENTIFIED BY 'your_password';
 GRANT ALL PRIVILEGES ON supermarket_db.* TO 'supermarket_user'@'localhost';
 FLUSH PRIVILEGES;
-\`\`\`
+```
 
 ## Usage
 
@@ -255,7 +250,7 @@ EMAIL_HOST_PASSWORD=your-app-password
 - [ ] Set up monitoring and logging
 
 ### Docker Deployment
-\`\`\`dockerfile
+```dockerfile
 FROM python:3.9
 WORKDIR /app
 COPY requirements.txt .
@@ -263,7 +258,8 @@ RUN pip install -r requirements.txt
 COPY . .
 EXPOSE 8000
 CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]
-\`\`\`
+docker build -t harny:latest
+```
 
 ## Contributing
 
