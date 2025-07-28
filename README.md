@@ -62,7 +62,7 @@ A comprehensive Django-based supermarket management system with role-based authe
 
 1. **Clone the repository**
 \`\`\`bash
-git clone <repository-url>
+git clone https://github.com/Omollodev/Supermarket.git
 cd supermarket-management
 \`\`\`
 
