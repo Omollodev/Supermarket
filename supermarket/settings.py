@@ -57,19 +57,28 @@ TEMPLATES = [
 WSGI_APPLICATION = 'supermarket.wsgi.application'
 ASGI_APPLICATION = 'supermarket.asgi.application'
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': config('DB_NAME'),
-        'USER': config('DB_USER'),
-        'PASSWORD': config('DB_PASSWORD'),
-        'HOST': config('DB_HOST'),
-        'PORT': config('DB_PORT'),
-        'OPTIONS': {
-            'sql_mode': 'traditional',
+# Database Configuration
+database_url = config('DATABASE_URL')
+if database_url:
+    DATABASES = {
+        'default': dj_database_url.config(default=database_url)
+    }
+else:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.mysql',
+            'NAME': config('DB_NAME'),
+            'USER': config('DB_USER'),
+            'PASSWORD': config('DB_PASSWORD'),
+            'HOST': config('DB_HOST'),
+            'PORT': config('DB_PORT'),
+            'OPTIONS': {
+                'sql_mode': 'traditional',
+            }
         }
     }
-}
+
+
 
 AUTH_PASSWORD_VALIDATORS = [
     {
