@@ -1,6 +1,7 @@
 import os
 from pathlib import Path
 from decouple import config
+import dj_database_url
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -58,7 +59,7 @@ WSGI_APPLICATION = 'supermarket.wsgi.application'
 ASGI_APPLICATION = 'supermarket.asgi.application'
 
 # Database Configuration
-database_url = config('DATABASE_URL')
+database_url = config('DATABASE_URL', default='')
 if database_url:
     DATABASES = {
         'default': dj_database_url.config(default=database_url)
@@ -77,7 +78,6 @@ else:
             }
         }
     }
-
 
 
 AUTH_PASSWORD_VALIDATORS = [
