@@ -1,4 +1,4 @@
-%{% load static %}
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -12,7 +12,8 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <!-- Custom CSS -->
     <link rel="stylesheet" href="{% static 'css/base.css' %}">
-    
+    <!--Logo-->
+    <link rel="icon" href="{% static 'imgs/harny-markt-logo.png' %}" type="image/png">
     {% block extra_css %}{% endblock %}
 </head>
 <body>
@@ -24,7 +25,7 @@
                 <div class="position-sticky pt-3">
                     <div class="text-center mb-4">
                         <h4 class="text-white">
-                            <i class="fas fa-store"></i> Supermarket
+                            <img src="{% static 'imgs/harny-markt-logo.png' %}" alt="Harny Mart" class="sidebar-logo" style="width: 25px; height: 25px;"> H.Mart
                         </h4>
                         <small class="text-white-50">Management System</small>
                     </div>

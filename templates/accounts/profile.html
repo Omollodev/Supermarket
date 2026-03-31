@@ -1,5 +1,5 @@
 {% extends 'base.html' %}
-
+{% load static %}
 {% block title %}Profile - Supermarket Management{% endblock %}
 {% block page_title %}My Profile{% endblock %}
 
@@ -12,7 +12,7 @@
                     <img src="{{ user.profile_picture.url }}" alt="Profile Picture" class="rounded-circle mb-3" width="150" height="150">
                 {% else %}
                     <div class="bg-primary rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style="width: 150px; height: 150px;">
-                        <i class="fas fa-user fa-4x text-white"></i>
+                        <img src="{% static 'imgs/harny-markt-logo.png' %}" alt="Harny Mart" class="profile-logo" style="width: 100px; height: 100px;">
                     </div>
                 {% endif %}
                 

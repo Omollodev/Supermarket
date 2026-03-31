@@ -20,7 +20,9 @@ class CustomUserAdmin(UserAdmin):
             'fields': ('role', 'phone_number', 'address', 'hourly_rate')
         }),
     )
-    readonly_fields = []
+    # UserAdmin does not define readonly_fields; CustomUser.date_joined uses auto_now_add (non-editable)
+    # and must be excluded from the ModelForm and shown read-only in the change view.
+    readonly_fields = ('last_login', 'date_joined')
 
 @admin.register(PasswordResetToken)
 class PasswordResetTokenAdmin(admin.ModelAdmin):

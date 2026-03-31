@@ -17,6 +17,8 @@
     
     <!-- Custom CSS -->
     <link rel="stylesheet" href="{% static 'css/landing.css' %}">
+     <!-- Favicon -->
+     <link rel="icon" href="{% static 'imgs/harny-markt-logo.png' %}" type="image/png">
 </head>
 <body>
     <!-- Loading Overlay -->
@@ -28,7 +30,8 @@
     <nav class="navbar navbar-expand-lg fixed-top">
         <div class="container">
             <a class="navbar-brand" href="#home">
-                <i class="fas fa-store me-2"></i> Harny Mart
+                <img src="{% static 'imgs/harny-markt-logo.png' %}" alt="Harny Mart" class="navbar-brand-logo" style="width: 50px; height: 50px;">
+                Harny Mart
             </a>
             
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
@@ -69,7 +72,7 @@
         </div>
         
         <div class="container">
-            <div class="row align-items-center">
+            <div class="row align-items-center g-4">
                 <div class="col-lg-6" data-aos="fade-right">
                     <div class="hero-content">
                         <h1>Revolutionize Your <span class="text-warning">Supermarket</span> Management</h1>
@@ -79,25 +82,14 @@
                             <a href="{% url 'register' %}" class="btn-hero">
                                 <i class="fas fa-rocket me-2"></i>Get Started Free
                             </a>
-                            <a href="#features" class="btn-hero btn-outline">
-                                <i class="fas fa-play me-2"></i>Watch Demo
-                            </a>
-                        </div>
-                        
-                        <div class="mt-4">
-                            <small class="text-white-50">
-                                <i class="fas fa-check me-2"></i>No credit card required
-                                <i class="fas fa-check me-2 ms-3"></i>14-day free trial
-                                <i class="fas fa-check me-2 ms-3"></i>24/7 support
-                            </small>
                         </div>
                     </div>
                 </div>
                 
                 <div class="col-lg-6" data-aos="fade-left">
-                    <div class="text-center">
-                        <div class="floating">
-                            <i class="fas fa-store" style="font-size: 15rem; color: rgba(255,255,255,0.1);"></i>
+                    <div class="hero-visual text-center">
+                        <div class="floating d-inline-block">
+                            <img src="{% static 'imgs/harny-markt-logo.png' %}" alt="Harny Mart" class="hero-brand-logo img-fluid">
                         </div>
                     </div>
                 </div>
@@ -227,28 +219,28 @@
             <div class="row">
                 <div class="col-lg-4 col-md-6 mb-4" data-aos="fade-up" data-aos-delay="100">
                     <div class="testimonial-card">
-                        <div class="testimonial-avatar">JD</div>
+                        <img src="{% static 'imgs/enock.jpg' %}" alt="Enock" class="testimonial-avatar">Enock
                         <p class="mb-3">"This system transformed our operations completely. Staff management is now effortless, and our billing process is lightning fast!"</p>
-                        <h6 class="fw-bold">John Karanja</h6>
+                        <h6 class="fw-bold">Enock Mwangi</h6>
                         <small class="text-muted">Owner, Mangunas Supermarket</small>
                     </div>
                 </div>
                 
                 <div class="col-lg-4 col-md-6 mb-4" data-aos="fade-up" data-aos-delay="200">
                     <div class="testimonial-card">
-                        <div class="testimonial-avatar">SM</div>
+                        <img src="{% static 'imgs/anne.jpg' %}" alt="Anne Wanjiku" class="testimonial-avatar">Anne Wanjiku
                         <p class="mb-3">"The inventory management feature saved us thousands in waste. We always know what's in stock and what needs reordering."</p>
-                        <h6 class="fw-bold">Sarah Miller</h6>
+                        <h6 class="fw-bold">Anne Wanjiku</h6>
                         <small class="text-muted">Manager, Fresh Foods Market</small>
                     </div>
                 </div>
                 
                 <div class="col-lg-4 col-md-6 mb-4" data-aos="fade-up" data-aos-delay="300">
                     <div class="testimonial-card">
-                        <div class="testimonial-avatar">RJ</div>
+                        <img src="{% static 'imgs/rosemary.avif' %}" alt="Rosemary Wanjiru" class="testimonial-avatar">Rosemary Wanjiru
                         <p class="mb-3">"Customer service is outstanding, and the system is so intuitive. Our staff learned it in just a few hours!"</p>
-                        <h6 class="fw-bold">Robert Johnson</h6>
-                        <small class="text-muted">CEO, Johnson's Grocery Chain</small>
+                        <h6 class="fw-bold">Rosemary Wanjiru</h6>
+                        <small class="text-muted">CEO, Wanjiru's Grocery Chain</small>
                     </div>
                 </div>
             </div>
@@ -292,12 +284,13 @@
                     <h5><i class="fas fa-store me-2"></i>SuperMarket Pro</h5>
                     <p class="text-muted">The ultimate supermarket management solution designed to streamline your operations and boost profitability.</p>
                     
-                    <div class="social-links">
+                    <!--<div class="social-links">
                         <a href="#"><i class="fab fa-facebook-f"></i></a>
                         <a href="#"><i class="fab fa-twitter"></i></a>
                         <a href="#"><i class="fab fa-linkedin-in"></i></a>
                         <a href="#"><i class="fab fa-instagram"></i></a>
                     </div>
+                -->
                 </div>
                 
                 <div class="col-lg-2 col-md-6 mb-4">
@@ -343,7 +336,7 @@
             
             <div class="row align-items-center">
                 <div class="col-md-6">
-                    <p class="mb-0 text-muted">&copy; 2025. Harny Mart All rights reserved.</p>
+                    <p class="mb-0 text-muted">&copy; 2026. Harny Mart All rights reserved.</p>
                 </div>
                 <div class="col-md-6 text-md-end">
                     <a href="#privacy" class="text-muted me-3">Privacy Policy</a>

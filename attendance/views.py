@@ -5,6 +5,7 @@ from django.utils import timezone
 from django.db.models import Sum, Q
 from django.http import JsonResponse
 from datetime import datetime, timedelta
+from decimal import Decimal
 from .models import Attendance, WageSummary
 from accounts.models import CustomUser
 import json
@@ -13,9 +14,16 @@ import json
 def dashboard_view(request):
     user = request.user
     today = timezone.now().date()
-    
-    # Get today's attendance
-    today_attendance = Attendance.objects.filter(user=user, date=today).first()
+
+    today_rows = Attendance.objects.filter(user=user, date=today)
+    # Same rule as clock_in / clock_out: one open shift per day
+    active_shift = today_rows.filter(clock_out__isnull=True).order_by('-clock_in').first()
+
+    completed_hours = today_rows.aggregate(h=Sum('total_hours'))['h'] or Decimal('0')
+    hours_today = completed_hours
+    if active_shift:
+        delta = timezone.now() - active_shift.clock_in
+        hours_today += Decimal(str(round(delta.total_seconds() / 3600, 2)))
     
     # Get recent attendance records
     recent_attendance = Attendance.objects.filter(user=user).order_by('-date')[:10]
@@ -34,7 +42,8 @@ def dashboard_view(request):
     )
     
     context = {
-        'today_attendance': today_attendance,
+        'active_shift': active_shift,
+        'hours_today': hours_today,
         'recent_attendance': recent_attendance,
         'monthly_stats': monthly_stats,
         'user': user,
@@ -151,11 +160,9 @@ def wage_summary_view(request):
         
         wage_summaries.append(wage_summary)
         
-        # Move to previous month
-        if current_date.month == 1:
-            current_date = current_date.replace(year=current_date.year - 1, month=12)
-        else:
-            current_date = current_date.replace(month=current_date.month - 1)
+        # Move to previous month (use 1st + timedelta to avoid invalid days e.g. Mar 31 -> Feb)
+        first_of_month = current_date.replace(day=1)
+        current_date = first_of_month - timedelta(days=1)
     
     context = {
         'wage_summaries': wage_summaries,

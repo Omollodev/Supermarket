@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% load static %}
 
 {% block title %}Login - Supermarket Management{% endblock %}
 
@@ -9,7 +10,7 @@
             <div class="card shadow-lg">
                 <div class="card-body p-5">
                     <div class="text-center mb-4">
-                        <i class="fas fa-store fa-3x text-primary mb-3"></i>
+                        <img src="{% static 'imgs/harny-markt-logo.png' %}" alt="Harny Mart" class="login-logo" style="width: 100px; height: 100px;">
                         <h3 class="card-title">Welcome Back</h3>
                         <p class="text-muted">Sign in to your SuperMarket Pro account</p>
                     </div>

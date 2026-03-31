@@ -1,5 +1,5 @@
 {% extends 'base.html' %}
-
+{% load static %}
 {% block title %}Dashboard - Supermarket Management{% endblock %}
 {% block page_title %}Dashboard{% endblock %}
 
@@ -9,17 +9,17 @@
     <div class="col-md-6">
         <div class="card stats-card">
             <div class="card-body text-center">
-                {% if today_attendance and not today_attendance.clock_out %}
-                    <i class="fas fa-clock fa-3x mb-3"></i>
+                {% if active_shift %}
+                    <img src="{% static 'imgs/harny-markt-logo.png' %}" alt="Harny Mart" class="dashboard-logo" style="width: 50px; height: 50px;">
                     <h4>Currently Clocked In</h4>
-                    <p>Since: {{ today_attendance.clock_in|time:"H:i" }}</p>
+                    <p>Since: {{ active_shift.clock_in|time:"H:i" }}</p>
                     <a href="{% url 'clock_out' %}" class="btn btn-light btn-lg">
                         <i class="fas fa-sign-out-alt me-2"></i>Clock Out
                     </a>
                 {% else %}
                     <i class="fas fa-play fa-3x mb-3"></i>
                     <h4>Ready to Start</h4>
-                    <p>Click below to clock in</p>
+                    <p>Click below to clock in when you begin your shift</p>
                     <a href="{% url 'clock_in' %}" class="btn btn-light btn-lg">
                         <i class="fas fa-sign-in-alt me-2"></i>Clock In
                     </a>
@@ -44,7 +44,7 @@
                 <div class="card text-center">
                     <div class="card-body">
                         <i class="fas fa-dollar-sign text-success fa-2x mb-2"></i>
-                        <h5>${{ monthly_stats.total_wage|default:0 }}</h5>
+                        <h5>KSh{{ monthly_stats.total_wage|default:0 }}</h5>
                         <small class="text-muted">Earned This Month</small>
                     </div>
                 </div>
@@ -54,7 +54,7 @@
                 <div class="card text-center">
                     <div class="card-body">
                         <i class="fas fa-money-bill-wave text-info fa-2x mb-2"></i>
-                        <h5>${{ user.hourly_rate }}</h5>
+                        <h5>KSh{{ user.hourly_rate }}</h5>
                         <small class="text-muted">Hourly Rate</small>
                     </div>
                 </div>
@@ -64,7 +64,7 @@
                 <div class="card text-center">
                     <div class="card-body">
                         <i class="fas fa-calendar text-warning fa-2x mb-2"></i>
-                        <h5>{{ today_attendance.total_hours|default:0 }}</h5>
+                        <h5>{{ hours_today }}</h5>
                         <small class="text-muted">Hours Today</small>
                     </div>
                 </div>
@@ -109,7 +109,7 @@
                                         {% endif %}
                                     </td>
                                     <td>{{ attendance.total_hours }}</td>
-                                    <td>${{ attendance.wage_earned }}</td>
+                                    <td>KSh{{ attendance.wage_earned }}</td>
                                 </tr>
                                 {% endfor %}
                             </tbody>

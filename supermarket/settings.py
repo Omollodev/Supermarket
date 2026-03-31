@@ -55,6 +55,7 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'supermarket.wsgi.application'
+ASGI_APPLICATION = 'supermarket.asgi.application'
 
 DATABASES = {
     'default': {
