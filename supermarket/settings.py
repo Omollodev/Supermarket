@@ -165,6 +165,7 @@ STRIPE_PUBLISHABLE_KEY = config('STRIPE_PUBLISHABLE_KEY', default='')
 STRIPE_SECRET_KEY = config('STRIPE_SECRET_KEY', default='')
 
 # Safaricom Daraja — B2C salary payouts (Business → M-Pesa). Register callback URLs in the portal.
+# Local dev: set NGROK_AUTHTOKEN, then run `python runserver_ngrok.py` — it sets MPESA_B2C_* from the tunnel URL.
 MPESA_ENV = config('MPESA_ENV', default='sandbox')
 MPESA_CONSUMER_KEY = config('MPESA_CONSUMER_KEY', default='')
 MPESA_CONSUMER_SECRET = config('MPESA_CONSUMER_SECRET', default='')
