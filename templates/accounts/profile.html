@@ -36,7 +36,7 @@
             <div class="card-body">
                 <div class="row text-center">
                     <div class="col-6">
-                        <h4 class="text-primary">${{ user.hourly_rate }}</h4>
+                        <h4 class="text-primary">KES {{ user.hourly_rate }}</h4>
                         <small class="text-muted">Hourly Rate</small>
                     </div>
                     <div class="col-6">
@@ -76,6 +76,14 @@
                     <div class="mb-3">
                         <label for="{{ form.phone_number.id_for_label }}" class="form-label">Phone Number</label>
                         {{ form.phone_number }}
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="{{ form.mpesa_phone.id_for_label }}" class="form-label">M-Pesa number (wages)</label>
+                        {{ form.mpesa_phone }}
+                        {% if form.mpesa_phone.help_text %}
+                            <div class="form-text">{{ form.mpesa_phone.help_text }}</div>
+                        {% endif %}
                     </div>
                     
                     <div class="mb-3">

@@ -4,6 +4,8 @@ from django.conf import settings
 from django.conf.urls.static import static
 from django.shortcuts import render, redirect
 
+from attendance import views as attendance_views
+
 def landing_page(request):
     if request.user.is_authenticated:
         return redirect('dashboard')
@@ -16,6 +18,8 @@ urlpatterns = [
     path('dashboard/', include('attendance.urls')),
     path('billing/', include('billing.urls')),
     path('inventory/', include('inventory.urls')),
+    path('webhooks/mpesa/b2c/result/', attendance_views.mpesa_b2c_result_webhook),
+    path('webhooks/mpesa/b2c/timeout/', attendance_views.mpesa_b2c_timeout_webhook),
 ]
 
 if settings.DEBUG:

@@ -93,10 +93,10 @@
                                         {% endif %}
                                     </td>
                                     <td>
-                                        <strong>${{ invoice.total_amount|floatformat:2 }}</strong>
+                                        <strong>KES {{ invoice.total_amount|floatformat:2 }}</strong>
                                     </td>
                                     <td>
-                                        <span class="text-success">${{ invoice.paid_amount|floatformat:2 }}</span>
+                                        <span class="text-success">KES {{ invoice.paid_amount|floatformat:2 }}</span>
                                     </td>
                                     <td>
                                         <span class="badge bg-{% if invoice.payment_status == 'paid' %}success{% elif invoice.payment_status == 'pending' %}warning{% elif invoice.payment_status == 'overdue' %}danger{% elif invoice.payment_status == 'partial' %}info{% else %}secondary{% endif %}">

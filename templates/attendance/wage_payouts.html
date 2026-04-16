@@ -1,0 +1,135 @@
+{% extends 'base.html' %}
+{% block title %}M-Pesa Wage Payouts{% endblock %}
+{% block page_title %}M-Pesa Wage Payouts{% endblock %}
+
+{% block content %}
+<div class="alert alert-info" role="alert">
+    <strong>Daraja B2C (Salary Payment).</strong>
+    Admins initiate payouts; Safaricom sends funds to each staff member’s <strong>M-Pesa number</strong> on file.
+    In the Daraja developer portal, set the result URL to
+    <code>{{ request.scheme }}://{{ request.get_host }}/webhooks/mpesa/b2c/result/</code>
+    and the queue timeout URL to
+    <code>{{ request.scheme }}://{{ request.get_host }}/webhooks/mpesa/b2c/timeout/</code>
+    (use your public HTTPS domain in production; the same values must appear in <code>MPESA_B2C_RESULT_URL</code> and <code>MPESA_B2C_QUEUE_TIMEOUT_URL</code>).
+</div>
+
+{% if not mpesa_ready %}
+<div class="alert alert-warning" role="alert">
+    M-Pesa credentials are incomplete. Add <code>MPESA_CONSUMER_KEY</code>, <code>MPESA_CONSUMER_SECRET</code>, <code>MPESA_SHORTCODE</code>,
+    <code>MPESA_INITIATOR_NAME</code>, <code>MPESA_SECURITY_CREDENTIAL</code>,
+    <code>MPESA_B2C_RESULT_URL</code>, and <code>MPESA_B2C_QUEUE_TIMEOUT_URL</code> to your environment.
+</div>
+{% endif %}
+
+<div class="card mb-4">
+    <div class="card-body">
+        <form method="get" class="row g-2 align-items-end">
+            <div class="col-auto">
+                <label class="form-label mb-0">Month</label>
+                <select name="month" class="form-select">
+                    <option value="1" {% if month == 1 %}selected{% endif %}>January</option>
+                    <option value="2" {% if month == 2 %}selected{% endif %}>February</option>
+                    <option value="3" {% if month == 3 %}selected{% endif %}>March</option>
+                    <option value="4" {% if month == 4 %}selected{% endif %}>April</option>
+                    <option value="5" {% if month == 5 %}selected{% endif %}>May</option>
+                    <option value="6" {% if month == 6 %}selected{% endif %}>June</option>
+                    <option value="7" {% if month == 7 %}selected{% endif %}>July</option>
+                    <option value="8" {% if month == 8 %}selected{% endif %}>August</option>
+                    <option value="9" {% if month == 9 %}selected{% endif %}>September</option>
+                    <option value="10" {% if month == 10 %}selected{% endif %}>October</option>
+                    <option value="11" {% if month == 11 %}selected{% endif %}>November</option>
+                    <option value="12" {% if month == 12 %}selected{% endif %}>December</option>
+                </select>
+            </div>
+            <div class="col-auto">
+                <label class="form-label mb-0">Year</label>
+                <input type="number" name="year" class="form-control" value="{{ year }}" min="2020" max="2100">
+            </div>
+            <div class="col-auto">
+                <button type="submit" class="btn btn-primary">Apply</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-body p-0">
+        <div class="table-responsive">
+            <table class="table table-hover mb-0">
+                <thead class="table-light">
+                    <tr>
+                        <th>Staff</th>
+                        <th>M-Pesa #</th>
+                        <th>Hours</th>
+                        <th>Wage (KES)</th>
+                        <th>Paid</th>
+                        <th>Last payout</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for row in rows %}
+                    <tr>
+                        <td>
+                            <strong>{{ row.user.get_full_name }}</strong>
+                            <br><small class="text-muted">{{ row.user.username }}</small>
+                        </td>
+                        <td>
+                            {% if row.user.mpesa_phone %}
+                                <code>{{ row.user.mpesa_phone }}</code>
+                            {% else %}
+                                <span class="text-danger">Missing</span>
+                            {% endif %}
+                        </td>
+                        <td>{{ row.wage_summary.total_hours|floatformat:2 }}</td>
+                        <td><strong>{{ row.wage_summary.total_wage|floatformat:2 }}</strong></td>
+                        <td>
+                            {% if row.wage_summary.is_paid %}
+                                <span class="badge bg-success">Yes</span>
+                            {% else %}
+                                <span class="badge bg-secondary">No</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if row.last_payout %}
+                                <small>
+                                    {{ row.last_payout.get_status_display }}
+                                    {% if row.last_payout.result_desc %}
+                                        <br><span class="text-muted">{{ row.last_payout.result_desc|truncatechars:40 }}</span>
+                                    {% endif %}
+                                </small>
+                            {% else %}—{% endif %}
+                        </td>
+                        <td class="text-end">
+                            {% if row.wage_summary.is_paid %}
+                                <span class="text-muted small">Settled</span>
+                            {% elif row.payout_pending %}
+                                <span class="badge bg-info text-dark">In progress</span>
+                            {% elif not row.user.mpesa_phone %}
+                                <span class="text-muted small">No phone</span>
+                            {% elif row.wage_summary.total_wage <= 0 %}
+                                <span class="text-muted small">Zero wage</span>
+                            {% else %}
+                                <form method="post" action="{% url 'initiate_wage_mpesa_payout' %}" class="d-inline">
+                                    {% csrf_token %}
+                                    <input type="hidden" name="user_id" value="{{ row.user.pk }}">
+                                    <input type="hidden" name="month" value="{{ month }}">
+                                    <input type="hidden" name="year" value="{{ year }}">
+                                    <button type="submit" class="btn btn-sm btn-primary" {% if not mpesa_ready %}disabled{% endif %}>
+                                        Pay via M-Pesa
+                                    </button>
+                                </form>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="7" class="text-center text-muted py-4">No staff to display.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

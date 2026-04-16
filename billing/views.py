@@ -130,7 +130,7 @@ def invoice_detail(request, invoice_id):
     invoice = get_object_or_404(Invoice, id=invoice_id)
     
     # Generate QR code for payment
-    qr_data = f"Invoice: {invoice.invoice_number}\nAmount: ${invoice.total_amount}\nDue: {invoice.due_date.strftime('%Y-%m-%d')}"
+    qr_data = f"Invoice: {invoice.invoice_number}\nAmount: KES {invoice.total_amount}\nDue: {invoice.due_date.strftime('%Y-%m-%d')}"
     qr = qrcode.QRCode(version=1, box_size=10, border=5)
     qr.add_data(qr_data)
     qr.make(fit=True)
@@ -157,7 +157,7 @@ def add_payment(request, invoice_id):
             payment = form.save(commit=False)
             payment.invoice = invoice
             payment.save()
-            messages.success(request, f'Payment of ${payment.amount} added successfully!')
+            messages.success(request, f'Payment of KES {payment.amount} added successfully!')
             return redirect('invoice_detail', invoice_id=invoice.id)
     else:
         form = PaymentForm()
@@ -209,8 +209,8 @@ def generate_receipt(request, invoice_id):
         items_data.append([
             item.description,
             str(item.quantity),
-            f'${item.unit_price}',
-            f'${item.total_price}'
+            f'KES {item.unit_price}',
+            f'KES {item.total_price}'
         ])
     
     items_table = Table(items_data, colWidths=[3*72, 1*72, 1.5*72, 1.5*72])
@@ -229,12 +229,12 @@ def generate_receipt(request, invoice_id):
     
     # Totals
     totals_data = [
-        ['Subtotal:', f'${invoice.subtotal}'],
-        ['Tax ({invoice.tax_rate}%):', f'${invoice.tax_amount}'],
-        ['Discount:', f'${invoice.discount_amount}'],
-        ['Total:', f'${invoice.total_amount}'],
-        ['Paid:', f'${invoice.paid_amount}'],
-        ['Balance:', f'${invoice.total_amount - invoice.paid_amount}'],
+        ['Subtotal:', f'KES {invoice.subtotal}'],
+        ['Tax ({invoice.tax_rate}%):', f'KES {invoice.tax_amount}'],
+        ['Discount:', f'KES {invoice.discount_amount}'],
+        ['Total:', f'KES {invoice.total_amount}'],
+        ['Paid:', f'KES {invoice.paid_amount}'],
+        ['Balance:', f'KES {invoice.total_amount - invoice.paid_amount}'],
     ]
     
     totals_table = Table(totals_data, colWidths=[4*72, 2*72])

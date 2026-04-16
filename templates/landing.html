@@ -1,8 +1,19 @@
 {% load static %}
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="light">
 <head>
     <meta charset="UTF-8">
+    <script>
+        (function () {
+            var k = 'harny-theme';
+            var s = localStorage.getItem(k);
+            if (s === 'dark' || s === 'light') {
+                document.documentElement.setAttribute('data-theme', s);
+            } else {
+                document.documentElement.setAttribute('data-theme', 'light');
+            }
+        })();
+    </script>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Harny Mart</title>
     
@@ -55,6 +66,12 @@
                     <li class="nav-item">
                         <a class="nav-link" href="#contact">Contact</a>
                     </li>
+                    <li class="nav-item d-flex align-items-center me-2">
+                        <button type="button" class="btn btn-sm btn-outline-secondary rounded-pill px-3" id="landingThemeToggle" title="Toggle light / dark theme">
+                            <i class="fas fa-moon" id="landingThemeMoon"></i>
+                            <i class="fas fa-sun d-none" id="landingThemeSun"></i>
+                        </button>
+                    </li>
                     <li class="nav-item ms-3">
                         <a href="{% url 'login' %}" class="btn btn-outline-primary rounded-pill px-4">
                             <i class="fas fa-sign-in-alt me-2"></i>Login
@@ -75,7 +92,7 @@
             <div class="row align-items-center g-4">
                 <div class="col-lg-6" data-aos="fade-right">
                     <div class="hero-content">
-                        <h1>Revolutionize Your <span class="text-warning">Supermarket</span> Management</h1>
+                        <h1>Revolutionize Your <span class="hero-highlight">Supermarket</span> Management</h1>
                         <p>Streamline operations, track attendance, manage inventory, and boost profits with our comprehensive management solution.</p>
                         
                         <div class="hero-buttons">
@@ -121,7 +138,7 @@
                 <div class="col-lg-4 col-md-6 mb-4" data-aos="fade-up" data-aos-delay="200">
                     <div class="feature-card">
                         <div class="feature-icon">
-                            <i class="fas fa-file-invoice-dollar"></i>
+                            <i class="fas fa-file-invoice"></i>
                         </div>
                         <h4>Smart Billing System</h4>
                         <p>Generate professional invoices, process multiple payment methods, and manage accounts receivable effortlessly.</p>
@@ -346,8 +363,41 @@
         </div>
     </footer>
 
+    <button type="button" class="theme-fab d-lg-none" id="landingThemeFab" title="Toggle light / dark theme" aria-label="Toggle theme">
+        <i class="fas fa-moon" id="landingThemeFabMoon"></i>
+        <i class="fas fa-sun d-none" id="landingThemeFabSun"></i>
+    </button>
+
     <!-- Bootstrap 5 JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        (function () {
+            var k = 'harny-theme';
+            function apply(t) {
+                document.documentElement.setAttribute('data-theme', t);
+                localStorage.setItem(k, t);
+                var dark = t === 'dark';
+                [
+                    ['landingThemeMoon', 'landingThemeSun'],
+                    ['landingThemeFabMoon', 'landingThemeFabSun']
+                ].forEach(function (ids) {
+                    var a = document.getElementById(ids[0]);
+                    var b = document.getElementById(ids[1]);
+                    if (a && b) {
+                        a.classList.toggle('d-none', dark);
+                        b.classList.toggle('d-none', !dark);
+                    }
+                });
+            }
+            apply(document.documentElement.getAttribute('data-theme') || 'light');
+            function toggle() {
+                var next = (document.documentElement.getAttribute('data-theme') || 'light') === 'dark' ? 'light' : 'dark';
+                apply(next);
+            }
+            document.getElementById('landingThemeToggle')?.addEventListener('click', toggle);
+            document.getElementById('landingThemeFab')?.addEventListener('click', toggle);
+        })();
+    </script>
     <!-- AOS Animation JS -->
     <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
     <!-- Custom JS -->

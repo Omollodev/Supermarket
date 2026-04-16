@@ -67,15 +67,8 @@ if database_url:
 else:
     DATABASES = {
         'default': {
-            'ENGINE': 'django.db.backends.mysql',
-            'NAME': config('DB_NAME'),
-            'USER': config('DB_USER'),
-            'PASSWORD': config('DB_PASSWORD'),
-            'HOST': config('DB_HOST'),
-            'PORT': config('DB_PORT'),
-            'OPTIONS': {
-                'sql_mode': 'traditional',
-            }
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': BASE_DIR / 'db.sqlite3',
         }
     }
 
@@ -152,6 +145,7 @@ JAZZMIN_SETTINGS = {
         "auth.Group": "fas fa-users",
         "accounts.CustomUser": "fas fa-user-circle",
         "attendance.Attendance": "fas fa-clock",
+        "attendance.MpesaPayout": "fas fa-mobile-alt",
         "billing.Invoice": "fas fa-file-invoice",
         "inventory.Product": "fas fa-box",
     },
@@ -169,6 +163,17 @@ JAZZMIN_SETTINGS = {
 # Stripe Configuration (for payment processing)
 STRIPE_PUBLISHABLE_KEY = config('STRIPE_PUBLISHABLE_KEY', default='')
 STRIPE_SECRET_KEY = config('STRIPE_SECRET_KEY', default='')
+
+# Safaricom Daraja — B2C salary payouts (Business → M-Pesa). Register callback URLs in the portal.
+MPESA_ENV = config('MPESA_ENV', default='sandbox')
+MPESA_CONSUMER_KEY = config('MPESA_CONSUMER_KEY', default='')
+MPESA_CONSUMER_SECRET = config('MPESA_CONSUMER_SECRET', default='')
+MPESA_SHORTCODE = config('MPESA_SHORTCODE', default='')
+MPESA_INITIATOR_NAME = config('MPESA_INITIATOR_NAME', default='')
+MPESA_SECURITY_CREDENTIAL = config('MPESA_SECURITY_CREDENTIAL', default='')
+MPESA_B2C_COMMAND_ID = config('MPESA_B2C_COMMAND_ID', default='SalaryPayment')
+MPESA_B2C_RESULT_URL = config('MPESA_B2C_RESULT_URL', default='')
+MPESA_B2C_QUEUE_TIMEOUT_URL = config('MPESA_B2C_QUEUE_TIMEOUT_URL', default='')
 
 LOGIN_URL = '/accounts/login/'
 LOGIN_REDIRECT_URL = '/dashboard/'

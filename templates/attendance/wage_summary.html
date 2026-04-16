@@ -34,7 +34,7 @@
                                         {{ summary.total_hours|floatformat:2 }} hrs
                                     </td>
                                     <td>
-                                        <span class="fw-bold text-success">${{ summary.total_wage|floatformat:2 }}</span>
+                                        <span class="fw-bold text-success">KES {{ summary.total_wage|floatformat:2 }}</span>
                                     </td>
                                     <td>
                                         {% if summary.is_paid %}
@@ -88,10 +88,10 @@
                         <div class="col-md-4">
                             <div class="card bg-success text-white">
                                 <div class="card-body text-center">
-                                    <i class="fas fa-dollar-sign fa-2x mb-2"></i>
+                                    <i class="fas fa-coins fa-2x mb-2"></i>
                                     <h4>
                                         {% for summary in wage_summaries %}
-                                            {% if forloop.first %}&dollar;{{ summary.total_wage|floatformat:2 }}{% endif %}
+                                            {% if forloop.first %}KES {{ summary.total_wage|floatformat:2 }}{% endif %}
                                         {% endfor %}
                                     </h4>
                                     <p class="mb-0">Wages This Month</p>

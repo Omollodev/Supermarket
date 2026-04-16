@@ -11,13 +11,13 @@ class CustomUserAdmin(UserAdmin):
     
     fieldsets = UserAdmin.fieldsets + (
         ('Additional Info', {
-            'fields': ('role', 'phone_number', 'address', 'profile_picture', 'hourly_rate')
+            'fields': ('role', 'phone_number', 'mpesa_phone', 'address', 'profile_picture', 'hourly_rate')
         }),
     )
     
     add_fieldsets = UserAdmin.add_fieldsets + (
         ('Additional Info', {
-            'fields': ('role', 'phone_number', 'address', 'hourly_rate')
+            'fields': ('role', 'phone_number', 'mpesa_phone', 'address', 'hourly_rate')
         }),
     )
     # UserAdmin does not define readonly_fields; CustomUser.date_joined uses auto_now_add (non-editable)

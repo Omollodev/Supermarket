@@ -1,8 +1,19 @@
 {% load static %}
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="light">
 <head>
     <meta charset="UTF-8">
+    <script>
+        (function () {
+            var k = 'harny-theme';
+            var s = localStorage.getItem(k);
+            if (s === 'dark' || s === 'light') {
+                document.documentElement.setAttribute('data-theme', s);
+            } else {
+                document.documentElement.setAttribute('data-theme', 'light');
+            }
+        })();
+    </script>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}Supermarket Management System{% endblock %}</title>
     
@@ -45,6 +56,12 @@
                                 Staff Attendance
                             </a>
                         </li>
+                        <li class="nav-item">
+                            <a class="nav-link {% if request.resolver_match.url_name == 'wage_payouts' %}active{% endif %}" href="{% url 'wage_payouts' %}">
+                                <i class="fas fa-mobile-alt me-2"></i>
+                                M-Pesa Wage Payouts
+                            </a>
+                        </li>
                         {% endif %}
                         
                         <li class="nav-item">
@@ -63,7 +80,7 @@
                         
                         <li class="nav-item">
                             <a class="nav-link {% if 'billing' in request.resolver_match.url_name %}active{% endif %}" href="{% url 'billing_dashboard' %}">
-                                <i class="fas fa-file-invoice-dollar me-2"></i>
+                                <i class="fas fa-file-invoice me-2"></i>
                                 Billing
                             </a>
                         </li>
@@ -120,6 +137,12 @@
                                 <i class="fas fa-calendar"></i>
                                 {{ "now"|date:"M d, Y" }}
                             </button>
+                            {% if user.is_authenticated %}
+                            <button type="button" class="btn btn-sm btn-outline-secondary d-none d-md-inline-block" id="themeToggle" title="Toggle light / dark theme">
+                                <i class="fas fa-moon" id="themeToggleMoon"></i>
+                                <i class="fas fa-sun d-none" id="themeToggleSun"></i>
+                            </button>
+                            {% endif %}
                         </div>
                     </div>
                 </div>
@@ -142,8 +165,43 @@
         </div>
     </div>
     
+    <button type="button" class="theme-fab {% if user.is_authenticated %}d-md-none{% endif %}" id="themeToggleFab" title="Toggle light / dark theme" aria-label="Toggle theme">
+        <i class="fas fa-moon" id="themeToggleFabMoon"></i>
+        <i class="fas fa-sun d-none" id="themeToggleFabSun"></i>
+    </button>
+
     <!-- Bootstrap 5 JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        (function () {
+            var k = 'harny-theme';
+            function apply(t) {
+                document.documentElement.setAttribute('data-theme', t);
+                localStorage.setItem(k, t);
+                var dark = t === 'dark';
+                [
+                    ['themeToggleMoon', 'themeToggleSun'],
+                    ['themeToggleFabMoon', 'themeToggleFabSun']
+                ].forEach(function (ids) {
+                    var moon = document.getElementById(ids[0]);
+                    var sun = document.getElementById(ids[1]);
+                    if (moon && sun) {
+                        moon.classList.toggle('d-none', dark);
+                        sun.classList.toggle('d-none', !dark);
+                    }
+                });
+            }
+            var cur = document.documentElement.getAttribute('data-theme') || 'light';
+            apply(cur);
+            function toggle() {
+                var next = (document.documentElement.getAttribute('data-theme') || 'light') === 'dark' ? 'light' : 'dark';
+                apply(next);
+            }
+            var navBtn = document.getElementById('themeToggle');
+            if (navBtn) navBtn.addEventListener('click', toggle);
+            document.getElementById('themeToggleFab')?.addEventListener('click', toggle);
+        })();
+    </script>
     
     {% block extra_js %}{% endblock %}
 </body>

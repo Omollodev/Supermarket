@@ -1,0 +1,67 @@
+{% extends 'base.html' %}
+{% block title %}Staff Attendance - Supermarket Management{% endblock %}
+{% block page_title %}Staff Attendance{% endblock %}
+
+{% block content %}
+<div class="row mb-3">
+    <div class="col">
+        <p class="text-muted mb-0">Today: <strong>{{ today|date:"F j, Y" }}</strong></p>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-body p-0">
+        <div class="table-responsive">
+            <table class="table table-hover mb-0">
+                <thead class="table-light">
+                    <tr>
+                        <th>Staff</th>
+                        <th>Status</th>
+                        <th>Clock in</th>
+                        <th>Clock out</th>
+                        <th>Hours</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for row in staff_attendance %}
+                    <tr>
+                        <td>
+                            <strong>{{ row.user.get_full_name }}</strong>
+                            <br><small class="text-muted">{{ row.user.username }}</small>
+                        </td>
+                        <td>
+                            {% if row.is_clocked_in %}
+                                <span class="badge bg-success">On shift</span>
+                            {% elif row.attendance %}
+                                <span class="badge bg-secondary">Finished</span>
+                            {% else %}
+                                <span class="badge bg-warning text-dark">Not clocked in</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if row.attendance %}
+                                {{ row.attendance.clock_in|time:"H:i" }}
+                            {% else %}—{% endif %}
+                        </td>
+                        <td>
+                            {% if row.attendance and row.attendance.clock_out %}
+                                {{ row.attendance.clock_out|time:"H:i" }}
+                            {% else %}—{% endif %}
+                        </td>
+                        <td>
+                            {% if row.attendance %}
+                                {{ row.attendance.total_hours }}
+                            {% else %}—{% endif %}
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="5" class="text-center text-muted py-4">No staff accounts found.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

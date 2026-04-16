@@ -1,12 +1,40 @@
-:root {
-            --primary-color: #667eea;
-            --secondary-color: #764ba2;
-            --accent-color: #f093fb;
-            --dark-color: #2c3e50;
-            --light-color: #ecf0f1;
+:root,
+        html[data-theme="light"] {
+            --primary-color: #1e4976;
+            --secondary-color: #0a1628;
+            --accent-color: #3d6fa8;
+            --text-main: #0a1628;
+            --dark-color: #0a1628;
+            --light-color: #ecf0f4;
             --success-color: #2ecc71;
             --warning-color: #f39c12;
             --danger-color: #e74c3c;
+            --features-bg: linear-gradient(135deg, #f5f7fb 0%, #e8ecf2 100%);
+            --navbar-bg: rgba(255, 255, 255, 0.95);
+            --card-surface: #ffffff;
+            --card-muted-bg: #f8f9fa;
+            --page-bg: #ffffff;
+            --navbar-toggler-filter: none;
+            --cta-gradient-end: #1e3a5f;
+        }
+
+        html[data-theme="dark"] {
+            --primary-color: #7eb3e8;
+            --secondary-color: #050a12;
+            --accent-color: #a8c7ff;
+            --text-main: #f0f4f8;
+            --dark-color: #050a12;
+            --light-color: #1a2332;
+            --success-color: #3dd68c;
+            --warning-color: #f5b041;
+            --danger-color: #ff6b6b;
+            --features-bg: linear-gradient(135deg, #121d2e 0%, #0d1829 100%);
+            --navbar-bg: rgba(13, 24, 41, 0.94);
+            --card-surface: #162236;
+            --card-muted-bg: #1a2d44;
+            --page-bg: #0d1829;
+            --navbar-toggler-filter: invert(1);
+            --cta-gradient-end: #1a3a5c;
         }
 
         * {
@@ -18,8 +46,10 @@
         body {
             font-family: 'Poppins', sans-serif;
             line-height: 1.6;
-            color: var(--dark-color);
+            color: var(--text-main);
+            background-color: var(--page-bg);
             overflow-x: hidden;
+            transition: background-color 0.25s ease, color 0.25s ease;
         }
 
         /* Custom Scrollbar */
@@ -42,7 +72,7 @@
 
         /* Navigation */
         .navbar {
-            background: rgba(255, 255, 255, 0.95) !important;
+            background: var(--navbar-bg) !important;
             backdrop-filter: blur(10px);
             box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1);
             transition: all 0.3s ease;
@@ -51,7 +81,11 @@
 
         .navbar.scrolled {
             padding: 0.5rem 0;
-            background: rgba(255, 255, 255, 0.98) !important;
+            background: var(--navbar-bg) !important;
+        }
+
+        .navbar-toggler-icon {
+            filter: var(--navbar-toggler-filter);
         }
 
         .navbar-brand {
@@ -65,7 +99,7 @@
 
         .nav-link {
             font-weight: 500;
-            color: var(--dark-color) !important;
+            color: var(--text-main) !important;
             margin: 0 0.5rem;
             transition: all 0.3s ease;
             position: relative;
@@ -116,6 +150,11 @@
         .hero-content {
             position: relative;
             z-index: 2;
+        }
+
+        .hero-highlight {
+            color: #b8d4ff;
+            text-shadow: 0 2px 12px rgba(0, 0, 0, 0.25);
         }
 
         .hero h1 {
@@ -195,11 +234,11 @@
         /* Features Section */
         .features {
             padding: 100px 0;
-            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            background: var(--features-bg);
         }
 
         .feature-card {
-            background: white;
+            background: var(--card-surface);
             border-radius: 20px;
             padding: 3rem 2rem;
             text-align: center;
@@ -252,7 +291,7 @@
         .feature-card h4 {
             font-weight: 600;
             margin-bottom: 1rem;
-            color: var(--dark-color);
+            color: var(--text-main);
         }
 
         .feature-card p {
@@ -288,11 +327,11 @@
         /* Testimonials */
         .testimonials {
             padding: 100px 0;
-            background: white;
+            background: var(--page-bg);
         }
 
         .testimonial-card {
-            background: #f8f9fa;
+            background: var(--card-muted-bg);
             border-radius: 20px;
             padding: 2.5rem;
             margin: 1rem;
@@ -329,7 +368,7 @@
 
         /* CTA Section */
         .cta {
-            background: linear-gradient(135deg, var(--dark-color), #34495e);
+            background: linear-gradient(135deg, var(--dark-color), var(--cta-gradient-end));
             padding: 100px 0;
             color: white;
             text-align: center;
@@ -468,4 +507,33 @@
                 transform: translateY(-100px) rotate(180deg);
                 opacity: 0.5;
             }
+        }
+
+        .theme-fab {
+            position: fixed;
+            bottom: 1.25rem;
+            right: 1.25rem;
+            z-index: 1040;
+            width: 3rem;
+            height: 3rem;
+            padding: 0;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border: none;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: #fff;
+            box-shadow: 0 4px 14px rgba(10, 22, 40, 0.35);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .theme-fab:hover {
+            color: #fff;
+            transform: scale(1.05);
+            box-shadow: 0 6px 20px rgba(10, 22, 40, 0.45);
+        }
+
+        html[data-theme="dark"] .theme-fab {
+            box-shadow: 0 4px 14px rgba(0, 0, 0, 0.5);
         }

@@ -45,3 +45,55 @@ class WageSummary(models.Model):
     class Meta:
         db_table = 'wage_summary'
         unique_together = ['user', 'month', 'year']
+
+
+class MpesaPayout(models.Model):
+    """B2C wage payout initiated via Daraja; final status comes from the result callback."""
+
+    class Status(models.TextChoices):
+        PENDING = 'pending', 'Pending'
+        QUEUED = 'queued', 'Queued'
+        SUCCESS = 'success', 'Success'
+        FAILED = 'failed', 'Failed'
+
+    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='mpesa_payouts')
+    wage_summary = models.ForeignKey(
+        WageSummary,
+        on_delete=models.CASCADE,
+        related_name='mpesa_payouts',
+        null=True,
+        blank=True,
+    )
+    amount = models.DecimalField(max_digits=12, decimal_places=2)
+    phone = models.CharField(max_length=12)
+    month = models.IntegerField()
+    year = models.IntegerField()
+    status = models.CharField(
+        max_length=20,
+        choices=Status.choices,
+        default=Status.PENDING,
+        db_index=True,
+    )
+    conversation_id = models.CharField(max_length=100, blank=True)
+    originator_conversation_id = models.CharField(max_length=100, blank=True)
+    result_code = models.CharField(max_length=32, blank=True)
+    result_desc = models.TextField(blank=True)
+    transaction_id = models.CharField(max_length=64, blank=True)
+    receipt = models.CharField(max_length=64, blank=True)
+    initiated_by = models.ForeignKey(
+        CustomUser,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name='mpesa_payouts_initiated',
+    )
+    raw_result = models.TextField(blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return f"{self.user.username} {self.year}-{self.month:02d} {self.status}"
+
+    class Meta:
+        db_table = 'mpesa_payout'
+        ordering = ['-created_at']

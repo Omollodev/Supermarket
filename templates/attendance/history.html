@@ -43,7 +43,7 @@
                 <div class="text-end">
                     <small class="text-muted">
                         Total Hours: <strong>{{ totals.total_hours|default:0 }}</strong> | 
-                        Total Wages: <strong>${{ totals.total_wage|default:0 }}</strong>
+                        Total Wages: <strong>KES {{ totals.total_wage|default:0 }}</strong>
                     </small>
                 </div>
                 {% endif %}
@@ -91,7 +91,7 @@
                                         {% endif %}
                                     </td>
                                     <td>
-                                        <span class="text-success fw-bold">${{ attendance.wage_earned|floatformat:2 }}</span>
+                                        <span class="text-success fw-bold">KES {{ attendance.wage_earned|floatformat:2 }}</span>
                                     </td>
                                     <td>
                                         {% if attendance.clock_out %}
@@ -120,8 +120,8 @@
                         <div class="col-md-6">
                             <div class="card bg-success text-white">
                                 <div class="card-body text-center">
-                                    <i class="fas fa-dollar-sign fa-2x mb-2"></i>
-                                    <h4>${{ totals.total_wage|default:0|floatformat:2 }}</h4>
+                                    <i class="fas fa-coins fa-2x mb-2"></i>
+                                    <h4>KES {{ totals.total_wage|default:0|floatformat:2 }}</h4>
                                     <p class="mb-0">Total Wages</p>
                                 </div>
                             </div>

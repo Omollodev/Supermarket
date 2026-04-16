@@ -2,6 +2,18 @@ from django.contrib.auth.models import AbstractUser
 from django.db import models
 from django.core.validators import RegexValidator
 
+# General contact; Kenyan format preferred (0… or 254…).
+_phone_validator = RegexValidator(
+    regex=r"^\+?254\d{9}$|^0\d{9}$|^$",
+    message="Enter a valid Kenyan phone (e.g. 0712345678 or +254712345678).",
+)
+
+# M-Pesa payout number: international format without +.
+_mpesa_validator = RegexValidator(
+    regex=r"^$|^254[17]\d{8}$",
+    message="M-Pesa number must be 2547XXXXXXXX or 2541XXXXXXXX.",
+)
+
 class CustomUser(AbstractUser):
     ROLE_CHOICES = [
         ('admin', 'Admin'),
@@ -12,8 +24,15 @@ class CustomUser(AbstractUser):
     role = models.CharField(max_length=10, choices=ROLE_CHOICES, default='staff')
     phone_number = models.CharField(
         max_length=15,
-        validators=[RegexValidator(regex=r'^\+?1?\d{9,15}$', message="Phone number must be entered in the format: '+999999999'. Up to 15 digits allowed.")],
-        blank=True
+        validators=[_phone_validator],
+        blank=True,
+        help_text="Contact phone (e.g. 0712345678).",
+    )
+    mpesa_phone = models.CharField(
+        max_length=12,
+        blank=True,
+        validators=[_mpesa_validator],
+        help_text="Number registered on M-Pesa for salary payouts (2547XXXXXXXX).",
     )
     address = models.TextField(blank=True)
     profile_picture = models.ImageField(upload_to='profile_pics/', blank=True, null=True)
