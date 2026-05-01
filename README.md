@@ -85,6 +85,73 @@ python manage.py runserver
    - Main application: http://127.0.0.1:8000
    - Admin panel: http://127.0.0.1:8000/admin
 
+### Local development with ngrok (HTTPS tunnel)
+
+Use [ngrok](https://ngrok.com/) when you need a public URL (for example **Safaricom Daraja callbacks** or testing from another device). The free tunnel hostname changes whenever you restart ngrok.
+
+**Important:** The tunnel must forward to the **same port** Django uses. If you run `python manage.py runserver` on port **8000**, start ngrok with **`ngrok http 8000`**, not `ngrok http 80` (unless your app really listens on port 80).
+
+#### Option A — ngrok CLI + helper script (recommended if the Python SDK complains about authtoken)
+
+1. In one terminal, expose the dev server port (example: 8000):
+
+   ```bash
+   ngrok http 8000
+   ```
+
+2. Copy the HTTPS forwarding URL (for example `https://abc-123.ngrok-free.app`).
+
+3. In another terminal, from the project root, start Django and align Daraja callback env vars with that URL:
+
+   ```bash
+   python runserver_ngrok.py --ngrok-url https://YOUR-SUBDOMAIN.ngrok-free.app 8000
+   ```
+
+   Or set the base URL once and use `--external`:
+
+   ```bash
+   export NGROK_PUBLIC_URL=https://YOUR-SUBDOMAIN.ngrok-free.app
+   python runserver_ngrok.py --external 8000
+   ```
+
+4. Open the app in the browser using the **ngrok HTTPS URL** (not only `127.0.0.1`) when you need the same origin as Daraja or external testers.
+
+#### Option B — ngrok Python SDK (embedded tunnel)
+
+Requires a verified ngrok account and `NGROK_AUTHTOKEN` ([dashboard](https://dashboard.ngrok.com/get-started/your-authtoken)):
+
+```bash
+export NGROK_AUTHTOKEN=your_token_here
+python runserver_ngrok.py 8000
+```
+
+This starts a tunnel and sets `MPESA_B2C_RESULT_URL` / `MPESA_B2C_QUEUE_TIMEOUT_URL` to match the public URL.
+
+#### CSRF and changing ngrok URLs
+
+Django compares the browser `Origin` to `CSRF_TRUSTED_ORIGINS`. With **`DEBUG=True`**, this project trusts common **ngrok wildcard** origins (for example `https://*.ngrok-free.app`) so you are not blocked by **403 CSRF** every time the subdomain changes.
+
+For production, set **`DEBUG=False`** and set **`CSRF_TRUSTED_ORIGINS`** in `.env` to your real domain(s), for example:
+
+```env
+CSRF_TRUSTED_ORIGINS=https://yourdomain.com,https://www.yourdomain.com
+```
+
+Optional: add a single tunnel base explicitly (in addition to wildcards in DEBUG):
+
+```env
+NGROK_PUBLIC_URL=https://YOUR-SUBDOMAIN.ngrok-free.app
+```
+
+#### Daraja (M-Pesa) callbacks
+
+Register the same URLs in the Safaricom Daraja app that your app sends in the B2C request. After `runserver_ngrok.py` starts, it prints:
+
+- `…/webhooks/mpesa/b2c/result/`
+- `…/webhooks/mpesa/b2c/timeout/`
+
+Use your public `https://…ngrok…` base URL plus those paths in the developer portal.
+
 ### Manual Installation
 
 1. **Create virtual environment**

@@ -11,6 +11,33 @@ DEBUG = config('DEBUG', default=True, cast=bool)
 
 ALLOWED_HOSTS = ['localhost', '127.0.0.1', '*']
 
+# CSRF: POST requests from a public ngrok URL send Origin: https://<subdomain>.ngrok-free.app
+# Wildcards (Django 4+) cover changing tunnel hostnames in DEBUG. For production, set DEBUG=False
+# and list only real domains in CSRF_TRUSTED_ORIGINS.
+CSRF_TRUSTED_ORIGINS = []
+_csrf_env = config('CSRF_TRUSTED_ORIGINS', default='').strip()
+if _csrf_env:
+    CSRF_TRUSTED_ORIGINS.extend(
+        o.strip() for o in _csrf_env.split(',') if o.strip()
+    )
+_ngrok_public = config('NGROK_PUBLIC_URL', default='').strip().rstrip('/')
+if _ngrok_public:
+    if not _ngrok_public.lower().startswith(('http://', 'https://')):
+        _ngrok_public = f'https://{_ngrok_public}'
+    CSRF_TRUSTED_ORIGINS.append(_ngrok_public)
+if DEBUG:
+    CSRF_TRUSTED_ORIGINS.extend([
+        'https://*.ngrok-free.app',
+        'https://*.ngrok-free.dev',
+        'https://*.ngrok.io',
+        'https://*.ngrok.app',
+    ])
+_seen_csrf = set()
+CSRF_TRUSTED_ORIGINS = [
+    o for o in CSRF_TRUSTED_ORIGINS
+    if o and o not in _seen_csrf and not _seen_csrf.add(o)
+]
+
 INSTALLED_APPS = [
     'jazzmin',
     'django.contrib.admin',
@@ -172,7 +199,8 @@ STRIPE_PUBLISHABLE_KEY = config('STRIPE_PUBLISHABLE_KEY', default='')
 STRIPE_SECRET_KEY = config('STRIPE_SECRET_KEY', default='')
 
 # Safaricom Daraja — B2C salary payouts (Business → M-Pesa). Register callback URLs in the portal.
-# Local dev: set NGROK_AUTHTOKEN, then run `python runserver_ngrok.py` — it sets MPESA_B2C_* from the tunnel URL.
+# Local dev: `python runserver_ngrok.py` (needs NGROK_AUTHTOKEN) or CLI `ngrok http <port>` +
+#   `python runserver_ngrok.py --ngrok-url https://…` — sets MPESA_B2C_* to match the tunnel.
 MPESA_ENV = config('MPESA_ENV', default='sandbox')
 MPESA_CONSUMER_KEY = config('MPESA_CONSUMER_KEY', default='')
 MPESA_CONSUMER_SECRET = config('MPESA_CONSUMER_SECRET', default='')
