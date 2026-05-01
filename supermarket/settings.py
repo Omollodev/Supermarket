@@ -59,7 +59,7 @@ WSGI_APPLICATION = 'supermarket.wsgi.application'
 ASGI_APPLICATION = 'supermarket.asgi.application'
 
 # Database Configuration
-database_url = config('DATABASE_URL', default='')
+"""database_url = config('DATABASE_URL', default='')
 if database_url:
     DATABASES = {
         'default': dj_database_url.config(default=database_url)
@@ -71,7 +71,14 @@ else:
             'NAME': BASE_DIR / 'db.sqlite3',
         }
     }
+"""
 
+DATABASES = {
+    'default': {
+        'ENGINE':'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
+    }
+}
 
 AUTH_PASSWORD_VALIDATORS = [
     {

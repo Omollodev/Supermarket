@@ -3,7 +3,7 @@
 Run Django behind an ngrok tunnel and point Daraja B2C callbacks at the public URL.
 
 Usage:
-  export NGROK_AUTHTOKEN=...   # from https://dashboard.ngrok.com/
+  export NGROK_AUTHTOKEN=2azn1cnpc8auVxoMSPpPnbQigXG_23we1GFZMJYZFFdCH3S7Q   # from https://dashboard.ngrok.com/
   python runserver_ngrok.py              # tunnel -> localhost:8000, runserver :8000
   python runserver_ngrok.py 8085        # tunnel -> localhost:8085, runserver :8085
 
